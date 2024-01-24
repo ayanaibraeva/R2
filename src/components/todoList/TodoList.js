@@ -1,12 +1,17 @@
 import React from 'react';
 import Todo from "../todo/Todo";
 import classes from "./TodoList.module.css"
-const TodoList = ( {tasks, handleDelete} ) => {
+const TodoList = ( {tasks, handleDelete, handleDone} ) => {
     return (
-        <div className={classes.list}>
+        <div className={classes.list} >
             {
-                tasks.map(task =>
-                    <Todo key={task.id} task={task} handleDelete={() => handleDelete(task.id)}/>
+                tasks.map((task, index) =>
+                    <Todo key={task.id}
+                          task={task}
+                          handleDelete={() => handleDelete(task.id)}
+                          index={index}
+                          handleDone={handleDone}
+                    />
                 )
             }
         </div>

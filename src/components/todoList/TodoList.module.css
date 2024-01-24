@@ -4,3 +4,8 @@
     flex-direction: column;
     gap: 20px;
 }
+
+.task.active {
+    background-color: yellow;
+    color: #9a2222;
+}
