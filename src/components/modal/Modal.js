@@ -19,7 +19,6 @@ const Modal = ( {
                 <Button onClick={handleShow} text={'Close'} />
                 <Input placeholder={"Add tasks"} onChangeInput={onChangeInput} />
                 <Button onClick={handleAdd} text={'Add'}/>
-
                 {/*<button  onClick={() => handleAdd()}>Add</button>*/}
             </div>
         </div>

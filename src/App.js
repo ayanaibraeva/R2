@@ -1,109 +1,152 @@
 import Modal from "./components/modal/Modal";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Button from "./components/button/Button";
 import TodoList from "./components/todoList/TodoList";
 import Input from "./components/input/Input";
 
-
-
 function App() {
 
-    // const   tasks = [
-    //     {
-    //         id:1 ,
-    //         title: 'coding'
-    //     },
-    //     {
-    //         id:2,
-    //         title: 'eat'
-    //     },
-    //     {
-    //         id:3,
-    //         title: 'sleep'
-    //     }
-    // ]
+    const [show, setShow] = useState(false);
+    const [input, setInput] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [local, setLocal] = useState([]);
+    const [task, setTask] = useState([]);
 
-    const [show, setShow] = useState(false )
-    const [input, setInput] = useState('')
-    const [searchInput, setSearchInput] = useState('')
-    console.log(searchInput)
-    const [task, setTask] = useState([
-        {
-            id:1,
-            title: "coding",
-            completed: false
-        },
-        {
-            id:2,
-            title: "learning",
-            completed: false
-        }
-    ])
+    const [filter, setFilter] = useState("all"); // Добавляем состояние для фильтрации тасков
 
     const handleShow = () => setShow(prevState => !prevState);
-    // если состояние нужно поменять на противоположное, то нужно использовать prevState
+
+    const BASE_URL = "https://jsonplaceholder.typicode.com/";
+
+    const getTodos = async (endpoint) => {
+        const data = await fetch(BASE_URL + endpoint);
+        const todos = await data.json();
+        localStorage.setItem('todos', JSON.stringify(todos));
+    };
+
+    const getFromLocalStorage = () => {
+        setLocal(JSON.parse(localStorage.getItem('todos')));
+    };
 
     const onChangeInput = (event) => {
-        setInput(event.target.value)
-    }
+        setInput(event.target.value);
+    };
 
     const onChangeSearch = (event) => {
-        setSearchInput(event.target.value)
-        const filter= task.filter(task => {
-          return task.title.toLowerCase().includes(event.target.value.toLowerCase())
-        })
-        setTask(filter)
-    }
-
+        setSearchInput(event.target.value);
+        const filter = task.filter(task => {
+            return task.title.toLowerCase().includes(event.target.value.toLowerCase());
+        });
+        setTask(filter);
+    };
 
     const handleAdd = () => {
-        setTask( prev => [
+        setTask(prev => [
             ...prev,
             {
-                id: task.length === 0 ? 1 : task[task.length -1].id + 1,
-                title: input
+                id: task.length === 0 ? 1 : task[task.length - 1].id + 1,
+                title: input,
+                completed: false
             }
-    ])
-    }
+        ]);
+        setInput('');
+    };
 
     const handleDone = (id) => {
-        task.map(task => {
-            if(task.id === id){
-                return task.completed = !task.completed
+        setTask(task.map(task => {
+            if (task.id === id) {
+                return {
+                    ...task,
+                    completed: !task.completed
+                };
             }
-            return task
-        })
-        setTask([...task])
-    }
+            return task;
+        }));
+    };
 
+    const handleEdit = (newTitle) => {
+        setTask(task.map(task => {
+            if (task.id === newTitle.id) {
+                return {
+                    ...task,
+                    title: newTitle.title
+                };
+            }
+            return task;
+        }));
+    };
+
+    const handleClear = () => {
+        setTask([]);
+        setLocal([]);
+    };
 
     const handleDelete = (id) => {
-        setTask(task.filter(task => task.id !== id))
-    }
+        setTask(task.filter(task => task.id !== id));
+    };
 
-    //task.id !== id - разница в порядке
+    const handleFilter = (event) => {
+        setFilter(event.target.value);
+    };
+
+    // Функция фильтрации тасков в соответствии с выбранным фильтром
+    const filteredTasks = () => {
+        if (filter === "completed") {
+            return task.filter(task => task.completed);
+        } else if (filter === "incomplete") {
+            return task.filter(task => !task.completed);
+        } else {
+            return task;
+        }
+    };
 
     React.useEffect(() => {
-        console.log(task, 'useEffect')
-    },[ task ])
-
-  return (
-    <div>
-        {
-            show  &&
-            <Modal
-                handleShow={handleShow}
-                onChangeInput={onChangeInput}
-                handleAdd={handleAdd}
-            >
-            </Modal>
+        const myLocalStorage = JSON.parse(localStorage.getItem('todos'));
+        if (myLocalStorage === null) {
+            localStorage.setItem('todos', JSON.stringify(task));
         }
-        {/*<button onClick={handleShow}>Open</button>*/}
-        <Button onClick={handleShow} text={'Open'} />
-        <Input placeholder={"search"} type={"search"} onChangeInput={onChangeSearch} />
-        <TodoList key={task.id} tasks={task} handleDelete={handleDelete} handleDone={handleDone} />
-    </div>
-  );
+        if (localStorage.length !== null) {
+            setTask(myLocalStorage);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(task));
+    }, [task]);
+
+    return (
+        <div>
+            {
+                show &&
+                <Modal
+                    handleShow={handleShow}
+                    onChangeInput={onChangeInput}
+                    handleAdd={handleAdd}
+                >
+                </Modal>
+            }
+
+            <Button onClick={handleShow} text={'Open'} />
+            <Button onClick={() => getTodos('todos')} text={"getTodos"} />
+            <Button onClick={() => getFromLocalStorage()} text={"get From LocalStorage"} />
+            <Button onClick={handleClear} text={"Clear all tasks"} />
+            <Input placeholder={"search"} type={"search"} onChangeInput={onChangeSearch} />
+
+            {/* Добавляем селектор для фильтрации тасков */}
+            <select value={filter} onChange={handleFilter}>
+                <option value="all">All Tasks</option>
+                <option value="completed">Completed Tasks</option>
+                <option value="incomplete">Incomplete Tasks</option>
+            </select>
+
+            <TodoList key={task.id}
+                      tasks={filteredTasks()} // Передаем отфильтрованные таски в TodoList
+                      handleDelete={handleDelete}
+                      handleDone={handleDone}
+                      handleEdit={handleEdit}
+            />
+        </div>
+    );
 }
 
 export default App;

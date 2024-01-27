@@ -11,5 +11,12 @@
 
 .completed {
     background-color: darkolivegreen;
-    text-decoration: line-through;
+    transition: 0.5s;
+}
+
+.edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
