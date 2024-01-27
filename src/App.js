@@ -12,7 +12,7 @@ function App() {
     const [local, setLocal] = useState([]);
     const [task, setTask] = useState([]);
 
-    const [filter, setFilter] = useState("all"); // Добавляем состояние для фильтрации тасков
+    const [filter, setFilter] = useState("all");
 
     const handleShow = () => setShow(prevState => !prevState);
 
@@ -88,8 +88,6 @@ function App() {
     const handleFilter = (event) => {
         setFilter(event.target.value);
     };
-
-    // Функция фильтрации тасков в соответствии с выбранным фильтром
     const filteredTasks = () => {
         if (filter === "completed") {
             return task.filter(task => task.completed);
@@ -132,7 +130,7 @@ function App() {
             <Button onClick={handleClear} text={"Clear all tasks"} />
             <Input placeholder={"search"} type={"search"} onChangeInput={onChangeSearch} />
 
-            {/* Добавляем селектор для фильтрации тасков */}
+
             <select value={filter} onChange={handleFilter}>
                 <option value="all">All Tasks</option>
                 <option value="completed">Completed Tasks</option>
@@ -140,7 +138,7 @@ function App() {
             </select>
 
             <TodoList key={task.id}
-                      tasks={filteredTasks()} // Передаем отфильтрованные таски в TodoList
+                      tasks={filteredTasks()}
                       handleDelete={handleDelete}
                       handleDone={handleDone}
                       handleEdit={handleEdit}
