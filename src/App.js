@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import Button from "./components/button/Button";
 import TodoList from "./components/todoList/TodoList";
 import Input from "./components/input/Input";
+import UsersPages from "./pages/usersPages/UsersPages";
+import PokemonPages from "./pages/pokemonPages/pokemonPages";
 
 function App() {
 
@@ -11,6 +13,8 @@ function App() {
     const [searchInput, setSearchInput] = useState('');
     const [local, setLocal] = useState([]);
     const [task, setTask] = useState([]);
+    const [users, setUsers] = useState([]);
+    // console.log(users)
 
     const [filter, setFilter] = useState("all");
 
@@ -18,10 +22,12 @@ function App() {
 
     const BASE_URL = "https://jsonplaceholder.typicode.com/";
 
-    const getTodos = async (endpoint) => {
+    const getApi = async (endpoint) => {
         const data = await fetch(BASE_URL + endpoint);
-        const todos = await data.json();
-        localStorage.setItem('todos', JSON.stringify(todos));
+        const users = await data.json();
+        console.log(users)
+        // localStorage.setItem('todos', JSON.stringify(todos));
+        setUsers(users)
     };
 
     const getFromLocalStorage = () => {
@@ -98,19 +104,24 @@ function App() {
         }
     };
 
+    // React.useEffect(() => {
+    //     const myLocalStorage = JSON.parse(localStorage.getItem('todos'));
+    //     if (myLocalStorage === null) {
+    //         localStorage.setItem('todos', JSON.stringify(task));
+    //     }
+    //     if (localStorage.length !== null) {
+    //         setTask(myLocalStorage);
+    //     }
+    // }, []);
+    //
+    // React.useEffect(() => {
+    //     localStorage.setItem('todos', JSON.stringify(task));
+    // }, [task]);
+    // const limit = 5
+    // const offset = 10
     React.useEffect(() => {
-        const myLocalStorage = JSON.parse(localStorage.getItem('todos'));
-        if (myLocalStorage === null) {
-            localStorage.setItem('todos', JSON.stringify(task));
-        }
-        if (localStorage.length !== null) {
-            setTask(myLocalStorage);
-        }
-    }, []);
-
-    React.useEffect(() => {
-        localStorage.setItem('todos', JSON.stringify(task));
-    }, [task]);
+        getApi('users')
+    }, [])
 
     return (
         <div>
@@ -125,7 +136,7 @@ function App() {
             }
 
             <Button onClick={handleShow} text={'Open'} />
-            <Button onClick={() => getTodos('todos')} text={"getTodos"} />
+            <Button onClick={() => getApi('todos')} text={"getTodos"} />
             <Button onClick={() => getFromLocalStorage()} text={"get From LocalStorage"} />
             <Button onClick={handleClear} text={"Clear all tasks"} />
             <Input placeholder={"search"} type={"search"} onChangeInput={onChangeSearch} />
@@ -137,12 +148,14 @@ function App() {
                 <option value="incomplete">Incomplete Tasks</option>
             </select>
 
-            <TodoList key={task.id}
-                      tasks={filteredTasks()}
-                      handleDelete={handleDelete}
-                      handleDone={handleDone}
-                      handleEdit={handleEdit}
-            />
+            {/*<TodoList key={task.id}*/}
+            {/*          tasks={filteredTasks()}*/}
+            {/*          handleDelete={handleDelete}*/}
+            {/*          handleDone={handleDone}*/}
+            {/*          handleEdit={handleEdit}*/}
+            {/*/>*/}
+            {/*<UsersPages users={users} />*/}
+            <PokemonPages/>
         </div>
     );
 }
