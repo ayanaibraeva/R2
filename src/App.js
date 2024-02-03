@@ -5,6 +5,7 @@ import TodoList from "./components/todoList/TodoList";
 import Input from "./components/input/Input";
 import UsersPages from "./pages/usersPages/UsersPages";
 import PokemonPages from "./pages/pokemonPages/pokemonPages";
+import FormPages from "./pages/formPages/formPages";
 
 function App() {
 
