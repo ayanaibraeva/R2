@@ -4,11 +4,10 @@ import Button from "../button/Button";
 import Input from "../input/Input";
 
 const Modal = ( {
-            handleShow,
-            onChangeInput,
-            handleAdd
+             children,
+            handleShow
         } ) => {
-
+    // console.log(pokemon)
     return (
         <div>
             <div className={classes.modalWrapper}>
@@ -17,9 +16,11 @@ const Modal = ( {
             <div className={classes.modalContent}>
                 {/*<button onClick={handleShow} >Close</button>*/}
                 <Button onClick={handleShow} text={'Close'} />
-                <Input placeholder={"Add tasks"} onChangeInput={onChangeInput} />
-                <Button onClick={handleAdd} text={'Add'}/>
+                {children}
+                {/*<Input placeholder={"Add tasks"} onChangeInput={onChangeInput} />*/}
+                {/*<Button onClick={handleAdd} text={'Add'}/>*/}
                 {/*<button  onClick={() => handleAdd()}>Add</button>*/}
+                {/*<h1>{pokemon.name}</h1>*/}
             </div>
         </div>
     );

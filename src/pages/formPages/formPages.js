@@ -9,30 +9,35 @@ const FormPages = () => {
         position: ""
     })
 
-    const [user, setUser] = useState()
-    console.log(user, 'uder')
+    console.log(userInfo, 'user')
 
     const changeInput = (event) => {
-        setUser(event.target.value)
+        setUserInfo({...userInfo, [event.target.name]: event.target.value})
     }
 
     const addUser = () => {
+        if (userInfo.userName === '' || userInfo.age === '' || userInfo.position === '') {
+            return alert("Fill in the fields!")
+        }
 
     }
 
     return (
         <div>
             <input type="text"
-            name="userName"
-            placeholder="user name"
+                    name="userName"
+                    placeholder="user name"
+                    onChange = {changeInput}
             />
             <input type="number"
                    name="age"
-                   placeholder="user name"
+                   placeholder="age"
+                   onChange = {changeInput}
             />
             <input type="text"
                    name="position"
                    placeholder="position"
+                   onChange = {changeInput}
             />
             <button onClick={addUser}>add user</button>
         </div>

@@ -11,7 +11,8 @@ const PokemonPages = () => {
     const getPokemon = async ( limit, offset ) => {
        try {
            const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`)
-           return setPokemonList(data.results)
+           console.log(data.results)
+           return (data.results)
        } catch(e) {
            console.log("error". e)
        } finally {
@@ -35,7 +36,7 @@ const PokemonPages = () => {
     }
 
     useEffect(() => {
-        getPokemon( limit, offset )
+        getPokemon( limit, offset ).then(pokemon => setPokemonList(pokemon))
     }, [offset, limit] )
 
     return (
@@ -46,7 +47,7 @@ const PokemonPages = () => {
             />
             <div className={classes.pokemon}>
                 {
-                    pokemonList.map(pokemon => <PokemonCard key={pokemon.name} pokemon={pokemon} />)
+                    pokemonList && pokemonList.map(pokemon => <PokemonCard key={pokemon.name} pokemon={pokemon} />)
                 }
             </div>
             <div className={classes.pagination}>
